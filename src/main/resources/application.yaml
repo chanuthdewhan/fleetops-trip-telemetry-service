@@ -1,3 +1,10 @@
 spring:
   application:
     name: trip-telemetry-service
+
+  config:
+    import: "configserver:"
+
+  cloud:
+    config:
+      uri: http://localhost:9000
