@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Service
-@Profile("prod")
+@Profile("!dev")
 @Slf4j
 public class GcsFileStorageService implements FileStorageService {
 
