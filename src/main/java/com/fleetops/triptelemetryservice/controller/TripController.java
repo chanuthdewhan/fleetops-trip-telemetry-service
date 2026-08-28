@@ -53,4 +53,9 @@ public class TripController {
     public ResponseEntity<TripResponse> completeTrip(@PathVariable String id) {
         return ResponseEntity.ok(tripService.completeTrip(id));
     }
+
+    @GetMapping("/{id}/proof-of-delivery/file")
+    public ResponseEntity<byte[]> getProofOfDeliveryFile(@PathVariable String id) {
+        return tripService.getProofOfDeliveryFile(id);
+    }
 }

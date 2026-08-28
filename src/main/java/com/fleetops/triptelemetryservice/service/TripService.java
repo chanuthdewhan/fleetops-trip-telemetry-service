@@ -1,6 +1,7 @@
 package com.fleetops.triptelemetryservice.service;
 
 import com.fleetops.triptelemetryservice.dto.trip.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -12,4 +13,5 @@ public interface TripService {
     TripResponse completeTrip(String tripId);
     TripResponse getTripById(String tripId);
     List<TripResponse> getTripsByOrderId(Long orderId);
+    ResponseEntity<byte[]> getProofOfDeliveryFile(String tripId);
 }

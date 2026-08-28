@@ -2,6 +2,8 @@ package com.fleetops.triptelemetryservice.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +33,20 @@ public class LocalFileStorageService implements FileStorageService {
         } catch (IOException e) {
             log.error("Failed to store file", e);
             throw new RuntimeException("Failed to store file: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<byte[]> download(String relativePath) {
+        try {
+            String cleaned = relativePath.replaceFirst("^/uploads/", "");
+            Path path = Path.of(basePath, cleaned);
+            byte[] content = Files.readAllBytes(path);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(content);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read local file: " + e.getMessage(), e);
         }
     }
 

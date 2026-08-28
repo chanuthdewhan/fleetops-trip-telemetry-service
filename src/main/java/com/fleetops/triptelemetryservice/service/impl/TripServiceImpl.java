@@ -16,6 +16,7 @@ import com.fleetops.triptelemetryservice.service.TripService;
 import com.fleetops.triptelemetryservice.storage.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,7 +37,7 @@ public class TripServiceImpl implements TripService {
     @Override
     public TripResponse startTrip(StartTripRequest request) {
         tripRepository.findByOrderIdAndStatusNot(request.getOrderId(), TripStatus.COMPLETED)
-                .ifPresent(t -> {
+                .ifPresent(_ -> {
                     throw new InvalidStateTransitionException(
                             "An active trip already exists for order " + request.getOrderId());
                 });
@@ -130,6 +131,15 @@ public class TripServiceImpl implements TripService {
                 "Order #" + trip.getOrderId() + " has been delivered");
 
         return tripMapper.toResponse(saved);
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getProofOfDeliveryFile(String tripId) {
+        Trip trip = getTripOrThrow(tripId);
+        if (trip.getProofOfDelivery() == null) {
+            throw new ResourceNotFoundException("No proof of delivery for trip: " + tripId);
+        }
+        return fileStorageService.download(trip.getProofOfDelivery().getFileUrl());
     }
 
     @Override
